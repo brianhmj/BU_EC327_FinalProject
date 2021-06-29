@@ -3,8 +3,13 @@
 // Copyright 2021
 // Copyright 2021
 
+// Standard Libraries
+#include <iostream>
+#include <chrono>
+#include <ctime>
 
-
+// SFML Libraries
+#include <SFML/Graphics.hpp>
 
 // Includes features in this script:
 
@@ -27,8 +32,18 @@
 
 */
 
+
+
 int main() {
 
+  // WINDOW SIZES
+  unsigned int seven_width = 700;
+  unsigned int seven_height = 200;
+
+  // Setup a structure of using a couple render windows - FEEL FREE TO DELETE/CHANGE
+  sf::RenderWindow seven_days(sf::VideoMode(seven_width, seven_height))
+
+  // got distracted and didn't finish yet - feel free to delete this and update
 
 
 
