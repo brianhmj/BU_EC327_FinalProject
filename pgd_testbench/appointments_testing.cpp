@@ -7,9 +7,10 @@
 #include <string>
 #include <vector>
 
-#include "json/single_include/nlohmann/json.hpp"
+#include "json.hpp"
+using nlohmann::json;
 
-using json = nlohmann::json;
+// using json = nlohmann::json;
 using std::string;
 
 
@@ -26,17 +27,15 @@ class Event {
 public:
 
   Event(); // constructor to create new event - set to read all info about event in!
-
   // void new_event(); // not sure if I'll use this
-
-  void save() {}; // will use this method to save appointment info to a json file
+  void save(); // will use this method to save appointment info to a json file
+  void save_notification();
 
   void modify_event() {}; // modify/overwrite a json file already created
 
   void delete_event() {}; // want to be able to remove events when they have passed and been dismissed by user!
 
   void show_events() {}; // shows all stored events
-
 
   void notification() {};
 
@@ -72,11 +71,78 @@ Event::Event() {
   std::cin >> this->notify;
 }
 
+void Event::save() {
 
+  json new_saved_event = 
+  {
+    {"name", this->name},
+    {"month", this->date.at(0)},
+    {"day", this->date.at(1)},
+    {"year", this->date.at(2)},
+    {
+      "start time", start_time
+    },
+    {
+      "end time", end_time
+    },
+    {"notify", this->notify}
+  };
+
+  // if (new_saved_event["notify"]) {
+  //   (*this).save_notification();
+  // }
+
+
+  // need to save the json info now as a json file
+
+
+}
+
+void Event::save_notification() {
+
+  string notification_day;
+  int notify_day;
+  bool valid_notification = true;
+
+  do {
+    std::cout << "How many days before the event/appointment would you like to be notified?";
+    std::cin >> notification_day;
+
+    try {
+      notify_day = std::stoi(notification_day);
+    } catch (std::invalid_argument) {
+      valid_notification = false;
+      std::cout << "please enter an integer for the number of days.";
+    }
+
+    if (notify_day < 0) {
+      valid_notification = false;
+      std::cout << "Please enter a positive integer for the number of days.";
+    }
+  } while (!valid_notification);
+
+
+  std::cout << "Here is what was entered for notification day: " << notify_day << "\n";
+
+  // Now I would adjust the timing of the notification!
+  // For now, I'm just setting up what the save structure.
+
+  json new_notify = 
+  {
+    {"event name", this->name},
+    {"event date", this->date},
+    {"event time", this->start_time},
+    {"notification_date", notification_day}, // this would probably hold more useful info
+    {"notification_time", this->start_time}  // just holding start time is too limiting
+  };
+
+}
 
 int main() {
 
   Event event1;
+  
+  event1.save_notification();
 
   return 0;
 }
