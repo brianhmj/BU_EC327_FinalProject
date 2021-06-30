@@ -7,6 +7,7 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
+#include <string>
 
 // SFML Libraries
 #include <SFML/Graphics.hpp>
@@ -35,19 +36,51 @@
 
 */
 
+void show_day() {
+  // this function will display a render window for events of a REQUESTED day
 
+}
 
-int main() {
+void show_week() {
+  // this function will display a render window with events for a REQUESTED week Sun - Sat
 
   // WINDOW SIZES
-  unsigned int seven_width = 700;
-  unsigned int seven_height = 200;
+  unsigned int width = 700;
+  unsigned int height = 200;
 
   // Setup a structure of using a couple render windows - FEEL FREE TO DELETE/CHANGE
   sf::RenderWindow seven_days(sf::VideoMode(seven_width, seven_height))
 
   // got distracted and didn't finish yet - feel free to delete this and update
 
+}
+
+void add_to_calendar() {
+
+  // this function will add an event to your calendar
+
+}
+
+
+int main() {
+
+  string command;
+
+  cout << "enter a command: show day, add, show week, quit\n";
+
+  while (true) {
+    std::cin >> command;
+    if (command == "quit")
+      break;
+    else if (command == "show day")
+      show_day();
+    else if (command == "add")
+      add_to_calendar();
+    else if (command == "show week")
+      show_week();
+    else
+      cout << "command not understood";
+  }
 
 
   return 0;
