@@ -12,6 +12,7 @@ using nlohmann::json;
 // using json = nlohmann::json;
 using std::string;
 
+void load_json(string file) {};
 
 class Event {
 
