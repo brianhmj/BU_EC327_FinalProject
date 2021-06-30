@@ -1,9 +1,8 @@
 // Copyright 2021 Parker Dunn
 
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <ctime>
-#include <chrono>
 #include <string>
 #include <vector>
 
@@ -94,8 +93,12 @@ void Event::save() {
 
 
   // need to save the json info now as a json file
-  
-  std::cout << new_saved_event.dump(2) << "\n"; // testing if you can see json data first
+  string file_name = "event_" + this->name + "_" + std::to_string((this->date).at(1)) + 
+                                                   std::to_string((this->date).at(0)) + 
+                                                   std::to_string((this->date).at(2)) + ".json";
+  std::ofstream jout{file_name};
+  jout << new_saved_event << "\n";
+  jout.close();
 
 }
 
@@ -122,12 +125,11 @@ void Event::save_notification() {
     }
   } while (!valid_notification);
 
-
-  std::cout << "Here is what was entered for notification day: " << notify_day << "\n";
-
   // Now I would adjust the timing of the notification!
-  // For now, I'm just setting up what the save structure.
 
+
+
+  // For now, I'm just setting up what the save structure.
   json new_notify = 
   {
     {"event name", this->name},
@@ -138,8 +140,10 @@ void Event::save_notification() {
   };
 
   // save the json file to computer with next set of lines!
-
-  std::cout << new_notify.dump(4) << "\n"; // testing if you can see json data first
+  string file_name = "notification_" + this->name + ".json";
+  std::ofstream jout{file_name};
+  jout << new_notify << "\n";
+  jout.close();
 
 }
 
