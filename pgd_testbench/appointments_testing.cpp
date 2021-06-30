@@ -94,7 +94,8 @@ void Event::save() {
 
 
   // need to save the json info now as a json file
-
+  
+  std::cout << new_saved_event.dump(2) << "\n"; // testing if you can see json data first
 
 }
 
@@ -136,13 +137,20 @@ void Event::save_notification() {
     {"notification_time", this->start_time}  // just holding start time is too limiting
   };
 
+  // save the json file to computer with next set of lines!
+
+  std::cout << new_notify.dump(4) << "\n"; // testing if you can see json data first
+
 }
 
 int main() {
 
   Event event1;
   
+  event1.save();
   event1.save_notification();
+
+
 
   return 0;
 }
