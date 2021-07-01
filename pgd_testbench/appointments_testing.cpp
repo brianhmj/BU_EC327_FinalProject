@@ -29,6 +29,7 @@ public:
   Event(); // constructor to create new event - set to read all info about event in!
   // void new_event(); // not sure if I'll use this
   void save(); // will use this method to save appointment info to a json file
+  
   void save_notification();
 
   void modify_event() {}; // modify/overwrite a json file already created
@@ -67,7 +68,7 @@ Event::Event() {
     std::cin >> this->end_time.at(i-5); 
   }
 
-  std::cout << "want notification? Enter 1 for true OR 0 for false. ";
+  std::cout << "want notification? Enter 1 for true OR 0 for false.\t";
   std::cin >> this->notify;
 }
 
@@ -154,7 +155,6 @@ int main() {
   
   event1.save();
   event1.save_notification();
-
 
 
   return 0;
