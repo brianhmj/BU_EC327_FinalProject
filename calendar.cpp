@@ -31,7 +31,7 @@ auto date(std::vector<int> date1, std::vector<int> date2){
 
 
 
-void show_day() {
+void show_day(vector<Event>* saved_events) {
 
   int in_day;
   int in_month;
@@ -65,7 +65,7 @@ void show_day() {
     std::string weekday = fulltime.substr(0,3);
 
 
-    sf::RenderWindow show_day(sf::VideoMode(1000, 1000), "group 5");
+    sf::RenderWindow s_day(sf::VideoMode(1000, 1000), "group 5");
     std::string day_info,event_info,text_day,text_hour,text_minute,text_second,text_month,text_year;
     sf::Text time1, event;
     sf::Font font;
@@ -84,12 +84,14 @@ void show_day() {
         temp_day = day,
         temp_year = year;
 
-    for (Event& ev : saved_events) {
-      if ()
+    for (auto ev : *saved_events) {
+      vector<int> saved_date = ev.get_date();
+      if (saved_date.at(0) == temp_month and saved_date.at(1) == temp_day and saved_date.at(2) == temp_year)
+        event_info += ("\n" + ev.get_name() + "\n");
     }
     //grab this days logged event or the logged event of the specified day dont froget to convert it to string if nesscary 
 
-    show_day.setFramerateLimit(1);
+    s_day.setFramerateLimit(10);
     border.setFillColor(sf::Color::Black);
     border.setOutlineColor(sf::Color::White);
     border.setOutlineThickness(1);
@@ -101,16 +103,16 @@ void show_day() {
     event.setFont(font);
     event.setString(event_info);
     event.setPosition(50,60);
-    while(show_day.isOpen()){
-     show_day.clear();
-     show_day.draw(border);
-     show_day.draw(time1);
-     show_day.draw(event);
-     show_day.display();
+    while(s_day.isOpen()){
+     s_day.clear();
+     s_day.draw(border);
+     s_day.draw(time1);
+     s_day.draw(event);
+     s_day.display();
 
-     while(show_day.pollEvent(Event)){
+     while(s_day.pollEvent(Event)){
       if(Event.type == sf::Event::Closed){
-          show_day.close();
+          s_day.close();
       }
      }
     }
@@ -215,7 +217,7 @@ void show_week() {
     // std::cout << theweek.at(6).tm_mday << std::endl;
 
 
-    sf::RenderWindow show_week(sf::VideoMode(2000, 1000), "group 5");
+    sf::RenderWindow s_week(sf::VideoMode(2000, 1000), "group 5");
     sf::Text d1,d2,d3,d4,d5,d6,d7,t1,t2,t3,t4,t5,t6,t7;
     sf::Font font;
     sf::RectangleShape day1(sf::Vector2f(200,300));
@@ -226,7 +228,7 @@ void show_week() {
     sf::RectangleShape day6(sf::Vector2f(200,300));
     sf::RectangleShape day7(sf::Vector2f(200,300));
 
-    show_week.setFramerateLimit(1);
+    s_week.setFramerateLimit(10);
 
     day1.setFillColor(sf::Color::Black);
     day1.setOutlineColor(sf::Color::White);
@@ -323,33 +325,33 @@ void show_week() {
     t7.setString("Sat " + monthArray.at(int(theweek.at(6).tm_mon)) + " " + std::to_string((int)theweek.at(6).tm_mday));
 
     
-    while(show_week.isOpen()){
-      show_week.clear();
-      show_week.draw(day1);
-      show_week.draw(day2);
-      show_week.draw(day3);
-      show_week.draw(day4);
-      show_week.draw(day5);
-      show_week.draw(day6);
-      show_week.draw(day7);
-      show_week.draw(d1);
-      show_week.draw(d2);
-      show_week.draw(d3);
-      show_week.draw(d4);
-      show_week.draw(d5);
-      show_week.draw(d6);
-      show_week.draw(d7);
-      show_week.draw(t1);
-      show_week.draw(t2);
-      show_week.draw(t3);
-      show_week.draw(t4);
-      show_week.draw(t5);
-      show_week.draw(t6);
-      show_week.draw(t7);
-      show_week.display();
-      while(show_week.pollEvent(Event)){
+    while(s_week.isOpen()){
+      s_week.clear();
+      s_week.draw(day1);
+      s_week.draw(day2);
+      s_week.draw(day3);
+      s_week.draw(day4);
+      s_week.draw(day5);
+      s_week.draw(day6);
+      s_week.draw(day7);
+      s_week.draw(d1);
+      s_week.draw(d2);
+      s_week.draw(d3);
+      s_week.draw(d4);
+      s_week.draw(d5);
+      s_week.draw(d6);
+      s_week.draw(d7);
+      s_week.draw(t1);
+      s_week.draw(t2);
+      s_week.draw(t3);
+      s_week.draw(t4);
+      s_week.draw(t5);
+      s_week.draw(t6);
+      s_week.draw(t7);
+      s_week.display();
+      while(s_week.pollEvent(Event)){
         if(Event.type == sf::Event::Closed){
-            show_week.close();
+            s_week.close();
         }
       }
     }
@@ -409,7 +411,7 @@ int main() {
     if (command == "quit")
       break;
     else if (command == "day")
-      show_day();
+      show_day(&saved_events);
     else if (command == "add") {
       Event e = add_to_calendar();
       e.event_save(&APPDATA_EVENTS);

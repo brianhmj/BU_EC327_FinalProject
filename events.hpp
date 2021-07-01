@@ -125,6 +125,10 @@ public:
   string get_filename() {
     return this->filename;
   }
+  vector<int> get_date() {
+    vector<int> date{this->month, this->day, this->year};
+    return date;
+  }
 
   // void notification() {};
 
