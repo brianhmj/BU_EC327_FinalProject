@@ -7,3 +7,6 @@ appointments: appointments_testing.cpp
 
 filesys: manipulate_filesystem.cpp
 	g++ -g -std=c++20 manipulate_filesystem.cpp -o filesys
+
+events: events.cpp
+	g++ -g -std=c++20 events.cpp -o events

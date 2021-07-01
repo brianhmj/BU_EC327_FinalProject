@@ -30,8 +30,9 @@ HOW FILE NAMES ARE CREATED:
 
 
 #include <iostream>
-#include <ctime>
 #include <fstream>
+#include <filesystem>
+#include <map>
 #include <string>
 #include <string>
 #include <vector>
@@ -39,19 +40,17 @@ HOW FILE NAMES ARE CREATED:
 #include "json.hpp"
 using nlohmann::json;
 
+namespace fs = std::filesystem;
+
 using std::string;
+using std::map;
+using std::vector;
+using std::cin;
 
-
-
-void show_events(const vector<Event>* events) {
-  for (auto e : events)
-    std::cout << e.show() << "\n";
-}
+typedef std::pair<int, string> MonthPair;
 
 string date_to_display(int month, int day, int year) {
-
-  typedef std::pair<int, string> MonthPair;
-  map<MonthPair> months;
+  map<int, string> months;
   months.emplace(MonthPair{1,"Jan"});
   months.emplace(MonthPair{2,"Feb"});
   months.emplace(MonthPair{3,"Mar"});
@@ -67,27 +66,6 @@ string date_to_display(int month, int day, int year) {
 
   return (months.at(month) + std::to_string(day) + std::to_string(year));
 }
-
-vector<Event> load_events(fs::path* AppData_Events, vector<Event>* saved_events, string name, int age) {
-
-  for (auto& p : fs::directory_iterator("AppData/Events")) {
-    json event;
-    std::ifstream event_file(p.path());
-    event_file >> event;
-    event_file.close();
-
-    saved_events->push_back(event)
-  }
-  return saved_events;
-}
-
-Event* find_event(const vector<Event>* saved, string find_name) {
-  for (Event& e : *saved) {
-    if (e.name == find_name) return &e;
-  }
-  return nullptr;
-}
-
 
 class Event {
 
@@ -117,17 +95,17 @@ public:
   // void new_event(); // not sure if I'll use this
 
   Event(json *j) {
-    name = *j["name"];
-    month = *j["month"];
-    day = *j["day"];
-    year = *j["year"];
-    notify = *j["notify"];
-    filename = *j["filename"];
+    name = j->at("name");
+    month = j->at("month");
+    day = j->at("day");
+    year = j->at("year");
+    notify = j->at("notify");
+    filename = j->at("filename");
   }
   
-  string event_save(fs::path*); // will use this method to save appointment info to a json file
+  void event_save(fs::path*); // will use this method to save appointment info to a json file
   void modify_event(vector<Event>*) {}; // modify/overwrite a json file already created
-  void show(); // shows all stored events
+  string show(); // shows all stored events
   void delete_event(vector<Event>*); // want to be able to remove events when they have passed and been dismissed by user!
 
   // void notification() {};
@@ -169,14 +147,14 @@ void modify_event(vector<Event>* saved) {
     std::cout << "Use the name as it is typed in the list above.\n";
     cin >> name_of_event;
     Event* mod_e = find_event(saved, name_of_event);
-  } while (mod_e == nullptr)
+  } while (mod_e == nullptr);
 
-  *mod_e = add_to_calender()
+  *mod_e = add_to_calender();
 }
 
 void delete_event(vector<Event>* saved, fs::path* AppData_Events) {
   string name_of_event;
-  std::cout << "Here are the events you can choose from:\n\n"
+  std::cout << "Here are the events you can choose from:\n\n";
   show_events(saved);
   std::cout << "\n\nPlease enter the name of the event that you would like to delete.";
 
@@ -194,5 +172,36 @@ void delete_event(vector<Event>* saved, fs::path* AppData_Events) {
     if (p.path() == mod_e->filename)
       std::cout << "\nEvent file deleted.\n";
   }
+}
 
+void show_events(const vector<Event>* events) {
+  for (auto e : events)
+    std::cout << e.show() << "\n";
+}
+
+vector<Event> load_events(fs::path* AppData_Events, vector<Event>* saved_events, string name, int age) {
+
+  for (auto& p : fs::directory_iterator("AppData/Events")) {
+    json event;
+    std::ifstream event_file(p.path());
+    event_file >> event;
+    event_file.close();
+
+    saved_events->push_back(event)
+  }
+  return saved_events;
+}
+
+Event* find_event(const vector<Event>* saved, string find_name) {
+  for (Event& e : *saved) {
+    if (e.name == find_name) return &e;
+  }
+  return nullptr;
+}
+
+
+
+int main() {
+
+  return 0;
 }
