@@ -65,7 +65,7 @@ string date_to_display(int month, int day, int year) {
   months.emplace(MonthPair{11,"Nov"});
   months.emplace(MonthPair{12,"Dec"});
 
-  return (months.at(month) + std::to_string(day) + std::to_string(year));
+  return (months.at(month) + " " + std::to_string(day) + " " + std::to_string(year));
 }
 
 class Event {
