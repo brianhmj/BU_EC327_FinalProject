@@ -14,7 +14,7 @@
 #include <SFML/Graphics.hpp>
 
 // Header file includes
-
+#include "events.hpp"
 
 // Includes features in this script:
 
@@ -237,8 +237,14 @@ Event add_to_calendar() {
 int main() {
 
   std::string command;
-  vector<Event> saved_events;
 
+  const fs::path WD = fs::current_path();
+  const fs::path APPDATA = WD / "AppData";
+  const fs::path APPDATA_EVENTS = APPDATA / "Events";
+
+  vector<Event> saved_events = load_events(&APPDATA_EVENTS);
+
+  // Add folder creation here!
   
 
   while (true) {

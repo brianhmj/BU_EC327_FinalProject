@@ -49,6 +49,13 @@ using std::cin;
 
 typedef std::pair<int, string> MonthPair;
 
+const fs::path WD = fs::current_path();
+const fs::path APPDATA = WD / "AppData";
+const fs::path APPDATA_EVENTS = APPDATA / "Events";
+
+
+
+
 string date_to_display(int month, int day, int year) {
   map<int, string> months;
   months.emplace(MonthPair{1,"Jan"});
@@ -82,6 +89,16 @@ class Event {
 
 public:
   // constructor to create new event
+  Event(string in_name, string in_month, string in_day, string in_year, string in_description, bool in_notify = false) {
+    name = in_name;
+    month = std::stoi(in_month);
+    day = std::stoi(in_day);
+    year = std::stoi(in_year);
+    description = in_description;
+    notify = in_notify;
+    filename = "event_" + name + std::to_string(day) + std::to_string(month) + std::to_string(year) + ".json";
+  };
+
   Event(string in_name, int in_month, int in_day, int in_year, string in_description, bool in_notify = false) {
     name = in_name;
     month = in_month;
@@ -91,6 +108,7 @@ public:
     notify = in_notify;
     filename = "event_" + name + std::to_string(day) + std::to_string(month) + std::to_string(year) + ".json";
   };
+
 
   // void new_event(); // not sure if I'll use this
 
@@ -105,18 +123,56 @@ public:
   
   void event_save(fs::path*); // will use this method to save appointment info to a json file
   void modify_event(vector<Event>*) {}; // modify/overwrite a json file already created
-  string show(); // shows all stored events
   void delete_event(vector<Event>*); // want to be able to remove events when they have passed and been dismissed by user!
+  string show(); // shows all stored events
+  string get_name() {
+    return this->name;
+  }
+  string get_filename() {
+    return this->filename;
+  }
 
   // void notification() {};
 
 };
 
+Event add_to_calendar() {
+  // this function will add an event to your calendar
+  std::string name, month, day, year, description;
+  bool notify;
+  std::cout << "name of event\n" << std::endl;
+  std::cin >> name;
+  std::cout << "month(entered as ##, ex. for febuary enter 02)\n" << std::endl;
+  std::cin >> month;
+  std::cout << "day(entered as ##, ex. for the twenty first enter 21)\n" << std::endl;
+  std::cin >> day;
+  std::cout << "Year(entered as ####, ex. for the year twenty twenty one enter 2021)\n" << std::endl;
+  std::cin >> year;
+  std::cout << "do you want to be notified before the event, if so enter a 1 for yes or a 0 for no\n" << std::endl;
+  std::cin >> notify;
+  std::cout << "event description\n" << std::endl;
+  std::cin >> description;
+  Event e(name,month,day,year,description);
+  return e;
+}
+
+void show_events(vector<Event>* events) {
+  for (auto& e : *events)
+    std::cout << e.show() << "\n";
+}
+
+Event* find_event(vector<Event>* saved, string find_name) {
+  for (Event& e : *saved) {
+    if (e.get_name() == find_name) return &e;
+  }
+  return nullptr;
+}
+
 string Event::show() {
   return "Name of event: " + name + " | " + date_to_display(month, day, year);
 }
 
-void Event::event_save(fs::path* AppData_Events) {
+void Event::event_save(fs::path* APPDATA_EVENTS) {
 
   // create json structure
   json new_saved_event = 
@@ -125,20 +181,21 @@ void Event::event_save(fs::path* AppData_Events) {
     {"month", this->month},
     {"day", this->day},
     {"year", this->year},
-    {"description", this->description};
+    {"description", this->description},
     {"filename", this->filename},
-    {"notify", this->notify};
+    {"notify", this->notify}
   };
 
   // save to file
-  fs::path save_file_loc = (*AppData_Events) / filename;
+  fs::path save_file_loc = (*APPDATA_EVENTS) / filename;
   std::ofstream jout{save_file_loc};
-  jout << j << "\n";
+  jout << new_saved_event << "\n";
   jout.close();
 }
 
 void modify_event(vector<Event>* saved) {
   string name_of_event;
+  Event* mod_e;
   std::cout << "Here are the events you can choose from:\n\n";
   show_events(saved);
   std::cout << "\n\nPlease enter the name of the event that you would like to modify.";
@@ -146,14 +203,15 @@ void modify_event(vector<Event>* saved) {
   do {
     std::cout << "Use the name as it is typed in the list above.\n";
     cin >> name_of_event;
-    Event* mod_e = find_event(saved, name_of_event);
+    mod_e = find_event(saved, name_of_event);
   } while (mod_e == nullptr);
 
-  *mod_e = add_to_calender();
+  *mod_e = add_to_calendar();
 }
 
-void delete_event(vector<Event>* saved, fs::path* AppData_Events) {
+void delete_event(vector<Event>* saved, fs::path* APPDATA_EVENTS) {
   string name_of_event;
+  Event* mod_e;
   std::cout << "Here are the events you can choose from:\n\n";
   show_events(saved);
   std::cout << "\n\nPlease enter the name of the event that you would like to delete.";
@@ -161,47 +219,39 @@ void delete_event(vector<Event>* saved, fs::path* AppData_Events) {
   do {
     std::cout << "Use the name as it is typed in the list above.\n";
     cin >> name_of_event;
-    Event* mod_e = find_event(saved, name_of_event);
-  } while (mod_e == nullptr)
+    mod_e = find_event(saved, name_of_event);
+  } while (mod_e == nullptr);
 
   for (int i = 0; i < saved->size(); i++) {
-    if (saved->name == name_of_event) saved->erase(saved->begin() + i);
+    if ((saved->at(i)).get_name() == name_of_event) saved->erase(saved->begin() + i);
   }
 
   for (auto& p : fs::directory_iterator("AppData/Events")) {
-    if (p.path() == mod_e->filename)
+    if (p.path() == mod_e->get_filename())
       std::cout << "\nEvent file deleted.\n";
   }
 }
 
-void show_events(const vector<Event>* events) {
-  for (auto e : events)
-    std::cout << e.show() << "\n";
-}
-
-vector<Event> load_events(fs::path* AppData_Events, vector<Event>* saved_events, string name, int age) {
-
+vector<Event> load_events(fs::path* APPDATA_EVENTS) {
+  vector<Event> saved_events;
   for (auto& p : fs::directory_iterator("AppData/Events")) {
     json event;
     std::ifstream event_file(p.path());
     event_file >> event;
     event_file.close();
 
-    saved_events->push_back(event)
+    Event e(&event);
+
+    saved_events.push_back(e);
   }
   return saved_events;
-}
-
-Event* find_event(const vector<Event>* saved, string find_name) {
-  for (Event& e : *saved) {
-    if (e.name == find_name) return &e;
-  }
-  return nullptr;
 }
 
 
 
 int main() {
+
+
 
   return 0;
 }
