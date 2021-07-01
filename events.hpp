@@ -115,9 +115,9 @@ public:
     filename = j->at("filename");
   }
   
-  void event_save(fs::path*); // will use this method to save appointment info to a json file
+  void event_save(const fs::path*); // will use this method to save appointment info to a json file
   void modify_event(vector<Event>*) {}; // modify/overwrite a json file already created
-  void delete_event(vector<Event>*); // want to be able to remove events when they have passed and been dismissed by user!
+  void delete_event(vector<Event>*, const fs::path*); // want to be able to remove events when they have passed and been dismissed by user!
   string show(); // shows all stored events
   string get_name() {
     return this->name;
@@ -132,20 +132,20 @@ public:
 
 Event add_to_calendar() {
   // this function will add an event to your calendar
-  std::string name, month, day, year, description;
+  std::string name, month, day, year, description, temp_name;
   bool notify;
-  std::cout << "name of event\n" << std::endl;
+  std::cout << "name of event" << std::endl;
   std::cin >> name;
-  std::cout << "month(entered as ##, ex. for febuary enter 02)\n" << std::endl;
+  std::cout << "month(entered as ##, ex. for febuary enter 02)" << std::endl;
   std::cin >> month;
-  std::cout << "day(entered as ##, ex. for the twenty first enter 21)\n" << std::endl;
+  std::cout << "day(entered as ##, ex. for the twenty first enter 21)" << std::endl;
   std::cin >> day;
-  std::cout << "Year(entered as ####, ex. for the year twenty twenty one enter 2021)\n" << std::endl;
+  std::cout << "Year(entered as ####, ex. for the year twenty twenty one enter 2021)" << std::endl;
   std::cin >> year;
   // std::cout << "do you want to be notified before the event, if so enter a 1 for yes or a 0 for no\n" << std::endl;
   // std::cin >> notify;
   std::cout << "event description\n" << std::endl;
-  std::getline(std::cin, description);
+  std::cin >> description;
   Event e(name,month,day,year,description);
   return e;
 }
@@ -166,7 +166,7 @@ string Event::show() {
   return "Name of event: " + name + " | " + date_to_display(month, day, year);
 }
 
-void Event::event_save(fs::path* APPDATA_EVENTS) {
+void Event::event_save(const fs::path* APPDATA_EVENTS) {
 
   // create json structure
   json new_saved_event = 
@@ -203,7 +203,7 @@ void modify_event(vector<Event>* saved) {
   *mod_e = add_to_calendar();
 }
 
-void delete_event(vector<Event>* saved, fs::path* APPDATA_EVENTS) {
+void delete_event(vector<Event>* saved, const fs::path* APPDATA_EVENTS) {
   string name_of_event;
   Event* mod_e;
   std::cout << "Here are the events you can choose from:\n\n";

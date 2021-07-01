@@ -234,9 +234,11 @@ int main() {
       break;
     else if (command == "day")
       show_day();
-    else if (command == "add")
-      saved_events.push_back(add_to_calendar());
-    else if (command == "week")
+    else if (command == "add") {
+      Event e = add_to_calendar();
+      e.event_save(&APPDATA_EVENTS);
+      saved_events.push_back(e);
+    } else if (command == "week")
       show_week();
     else
       std::cout << "command not understood\n";
