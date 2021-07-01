@@ -212,28 +212,6 @@ void show_week() {
 
 }
 
-Event add_to_calendar() {
-  // this function will add an event to your calendar
-  std::string name, month, day, year, description;
-  bool notify;
-  std::cout << "name of event\n" << std::endl;
-  std::cin >> name;
-  std::cout << "month(entered as ##, ex. for febuary enter 02)\n" << std::endl;
-  std::cin >> month;
-  std::cout << "day(entered as ##, ex. for the twenty first enter 21)\n" << std::endl;
-  std::cin >> day;
-  std::cout << "Year(entered as ####, ex. for the year twenty twenty one enter 2021)\n" << std::endl;
-  std::cin >> year;
-  std::cout << "do you want to be notified before the event, if so enter a 1 for yes or a 0 for no\n" << std::endl;
-  std::cin >> notify;
-  std::cout << "event description\n" << std::endl;
-  std::cin >> description;
-  Event e(name,month,day,year,description,notify);
-  return e;
-}
-
-
-
 int main() {
 
   std::string command;
@@ -242,10 +220,12 @@ int main() {
   const fs::path APPDATA = WD / "AppData";
   const fs::path APPDATA_EVENTS = APPDATA / "Events";
 
+  fs::create_directory(APPDATA);
+  fs::create_directory(APPDATA_EVENTS);
+
+
   vector<Event> saved_events = load_events(&APPDATA_EVENTS);
 
-  // Add folder creation here!
-  
 
   while (true) {
     std::cout << "enter a command: day, add, week, quit\n";

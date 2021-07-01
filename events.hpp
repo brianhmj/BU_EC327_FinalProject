@@ -142,10 +142,10 @@ Event add_to_calendar() {
   std::cin >> day;
   std::cout << "Year(entered as ####, ex. for the year twenty twenty one enter 2021)\n" << std::endl;
   std::cin >> year;
-  std::cout << "do you want to be notified before the event, if so enter a 1 for yes or a 0 for no\n" << std::endl;
-  std::cin >> notify;
+  // std::cout << "do you want to be notified before the event, if so enter a 1 for yes or a 0 for no\n" << std::endl;
+  // std::cin >> notify;
   std::cout << "event description\n" << std::endl;
-  std::cin >> description;
+  std::getline(std::cin, description);
   Event e(name,month,day,year,description);
   return e;
 }
@@ -226,7 +226,7 @@ void delete_event(vector<Event>* saved, fs::path* APPDATA_EVENTS) {
   }
 }
 
-vector<Event> load_events(fs::path* APPDATA_EVENTS) {
+vector<Event> load_events(const fs::path* APPDATA_EVENTS) {
   vector<Event> saved_events;
   for (auto& p : fs::directory_iterator("AppData/Events")) {
     json event;
