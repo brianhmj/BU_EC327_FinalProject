@@ -31,7 +31,7 @@ void save_json(json* j, fs::path* AppData) {
   fs::path save_file_loc = (*AppData) / filename;
 
   std::ofstream jout{save_file_loc};
-  jout << j << "\n";
+  jout << *j << "\n";
   jout.close();
 
 }
@@ -45,10 +45,8 @@ json load_json(fs::path* AppData, string name, int age) {
   string find = "AppData/" + file;
 
   for (auto& p : fs::directory_iterator("AppData")) {
-    std::cout << p.path() << "\n";
     if (p.path() == find) {
       std::ifstream event_file(p.path());
-      event_file.open();
       event_file >> event;
       event_file.close();
       found = true;
@@ -58,6 +56,8 @@ json load_json(fs::path* AppData, string name, int age) {
   // fs::filesystem_error er("ERROR: Did not find event you requested.", *AppData);
   // json::other_error er("Event not found");
   if (!found) std::cout << "ERROR: Did not find event you requested.\n";
+
+  std::cout << event.dump(3) << "\n";
 
   return event;
 }

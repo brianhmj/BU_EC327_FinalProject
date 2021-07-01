@@ -1,0 +1,1 @@
+// Might move all of Event class methods here
