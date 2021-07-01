@@ -39,17 +39,17 @@
 
 void show_day() {
   // this function will display a render window for events of a REQUESTED day
-  sf::RenderWindow show_day(sf::VideoMode(500, 200), "group 5");
+  sf::RenderWindow show_day(sf::VideoMode(1000, 1000), "group 5");
   std::string day_info,event_info,text_day,text_hour,text_minute,text_second;
   sf::Text time, event;
   sf::Font font;
-  sf::RectangleShape border(sf::Vector2f(100,60));
+  sf::RectangleShape border(sf::Vector2f(300,500));
   text_day = "1";//std::to_string(day);
   text_hour = "2";//std::to_string(hour);
   text_minute = "3";//std::to_string(minute);
   text_second = "4";//std::to_string(second);
-  day_info =text_day+":"+text_hour+":"+text_minute+":"+text_second;//to be replaced with
-  event_info = //grab this days logged event or the logged event of the specified day dont froget to convert it to string if nesscary 
+  day_info =text_day+":"+text_hour+":"+text_minute+":"+text_second;//can be replaced with relevant fetch commands, remember what ever is fetch needs to be evtually converted into a string
+  event_info ="hello" ;//grab this days logged event or the logged event of the specified day dont froget to convert it to string if nesscary 
   show_day.setFramerateLimit(1);
   border.setFillColor(sf::Color::Black);
   border.setOutlineColor(sf::Color::White);
@@ -58,14 +58,15 @@ void show_day() {
   font.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
   time.setFont(font);
   time.setString(day_info);
-  time.setPosition(50,10);
+  time.setPosition(50,30);
   event.setFont(font);
   event.setString(event_info);
-  event.setPosition(50,40);
+  event.setPosition(50,60);
   while(show_day.isOpen()){
    show_day.clear();
    show_day.draw(border);
-   show_day.draw(d1);
+   show_day.draw(time);
+   show_day.draw(event);
    show_day.display();
   }
 
@@ -77,16 +78,16 @@ void show_week() {
   // WINDOW SIZES
 
   // Setup a structure of using a couple render windows - FEEL FREE TO DELETE/CHANGE
-  sf::RenderWindow show_week(sf::VideoMode(1000, 200), "group 5");
-  sf::Text d1,d2,d3,d4,d5,d6,d7;
+  sf::RenderWindow show_week(sf::VideoMode(2000, 1000), "group 5");
+  sf::Text d1,d2,d3,d4,d5,d6,d7,t1,t2,t3,t4,t5,t6,t7;
   sf::Font font;
-  sf::RectangleShape day1(sf::Vector2f(100,60));
-  sf::RectangleShape day2(sf::Vector2f(100,60));
-  sf::RectangleShape day3(sf::Vector2f(100,60));
-  sf::RectangleShape day4(sf::Vector2f(100,60));
-  sf::RectangleShape day5(sf::Vector2f(100,60));
-  sf::RectangleShape day6(sf::Vector2f(100,60));
-  sf::RectangleShape day7(sf::Vector2f(100,60));
+  sf::RectangleShape day1(sf::Vector2f(200,300));
+  sf::RectangleShape day2(sf::Vector2f(200,300));
+  sf::RectangleShape day3(sf::Vector2f(200,300));
+  sf::RectangleShape day4(sf::Vector2f(200,300));
+  sf::RectangleShape day5(sf::Vector2f(200,300));
+  sf::RectangleShape day6(sf::Vector2f(200,300));
+  sf::RectangleShape day7(sf::Vector2f(200,300));
 
   show_week.setFramerateLimit(1);
 
@@ -113,12 +114,12 @@ void show_week() {
   day7.setOutlineThickness(1);
 
   day1.setPosition(50,20);
-  day2.setPosition(150,20);
-  day3.setPosition(250,20);
-  day4.setPosition(350,20);
-  day5.setPosition(450,20);
-  day6.setPosition(550,20);
-  day7.setPosition(650,20);
+  day2.setPosition(250,20);
+  day3.setPosition(450,20);
+  day4.setPosition(650,20);
+  day5.setPosition(850,20);
+  day6.setPosition(1050,20);
+  day7.setPosition(1250,20);
 
   font.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
   d1.setFont(font);
@@ -127,15 +128,29 @@ void show_week() {
   d4.setFont(font);
   d5.setFont(font);
   d6.setFont(font);
-  d7.setFont(font); 
+  d7.setFont(font);
+  t1.setFont(font); 
+  t2.setFont(font);
+  t3.setFont(font);
+  t4.setFont(font);
+  t5.setFont(font);
+  t6.setFont(font);
+  t7.setFont(font);
 
-  d1.setPosition(50,35);
-  d2.setPosition(150,35); 
-  d3.setPosition(250,35);
-  d4.setPosition(350,35);
-  d5.setPosition(450,35);
-  d6.setPosition(550,35);
-  d7.setPosition(650,35);
+  d1.setPosition(50,50);
+  d2.setPosition(250,50); 
+  d3.setPosition(450,50);
+  d4.setPosition(650,50);
+  d5.setPosition(850,50);
+  d6.setPosition(1050,50);
+  d7.setPosition(1250,50);
+  t1.setPosition(50,20);
+  t2.setPosition(250,20);
+  t3.setPosition(450,20);
+  t4.setPosition(650,20);
+  t5.setPosition(850,20);
+  t6.setPosition(1050,20);
+  t7.setPosition(1250,20);
 
   d1.setFillColor(sf::Color::White);
   d2.setFillColor(sf::Color::White);
@@ -144,7 +159,15 @@ void show_week() {
   d5.setFillColor(sf::Color::White);
   d6.setFillColor(sf::Color::White);
   d7.setFillColor(sf::Color::White);
-  //d1.setString(get sutff from json or from a stored vector);
+  t1.setFillColor(sf::Color::White);
+  t2.setFillColor(sf::Color::White);
+  t3.setFillColor(sf::Color::White);
+  t4.setFillColor(sf::Color::White);
+  t5.setFillColor(sf::Color::White);
+  t6.setFillColor(sf::Color::White);
+  t7.setFillColor(sf::Color::White);
+
+  
   d1.setString("hi");//info from json file goes here
   d2.setString("hi");
   d3.setString("hi");
@@ -152,6 +175,13 @@ void show_week() {
   d5.setString("hi");
   d6.setString("hi");
   d7.setString("hi");
+  t1.setString("1:2:3:4");
+  t2.setString("1:2:3:4");
+  t3.setString("1:2:3:4");
+  t4.setString("1:2:3:4");
+  t5.setString("1:2:3:4");
+  t6.setString("1:2:3:4");
+  t7.setString("1:2:3:4");
 
   
   while(show_week.isOpen()){
@@ -170,6 +200,13 @@ void show_week() {
   show_week.draw(d5);
   show_week.draw(d6);
   show_week.draw(d7);
+  show_week.draw(t1);
+  show_week.draw(t2);
+  show_week.draw(t3);
+  show_week.draw(t4);
+  show_week.draw(t5);
+  show_week.draw(t6);
+  show_week.draw(t7);
   show_week.display();
   }
 
