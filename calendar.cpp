@@ -1,7 +1,7 @@
 // Copyright 2021 Parker Dunn pgdunn@bu.edu
 // Copyright 2021 Ben Gross bengee19@bu.edu
-// Copyright 2021 Landon Kushimi lsh
-// Copyright 2021 Homoon Jung (Brian) 
+// Copyright 2021 Landon Kushimi lsk1801@bu.edu
+// Copyright 2021 Homoon Jung (Brian) brianhmj@bu.edu
 
 // Standard Libraries
 #include <iostream>
