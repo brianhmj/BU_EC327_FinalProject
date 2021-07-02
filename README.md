@@ -30,10 +30,12 @@ There is curretly no setup for the script to be compiled on a Windows device. Th
 
 This repo contains all scripts and files related to the development and testing of a calendar application built using the Simple and Fast Multimedia Library ([SFML](https://wwww.sfml-dev.org/index.php)).
 
-The core features of the application incldue:
+The core features of the application include:
 (1) view events on a requested day or week
 (2) add events/notifications to the calender and have the information saved
 (3) remove and modify events after they have been created
 (4) Review all events you have saved
 
 The application saves all event information in json format in a subfolder called AppData of the directory where the program is run.
+
+Time processing for the calendar app was done using the ctime library, interpreting user inputted integers representing the day, month, and year they requested into tm structs which could then be manipulated and displayed. The show_week(); and show_day(); functions contain all the time processing logic for this project.
