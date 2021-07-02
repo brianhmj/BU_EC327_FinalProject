@@ -16,15 +16,22 @@ The program is dependent on three files included with the project:
 (2) events.hpp   - contains functions and structures used for the application
 (3) json.hpp     - data format used to save information
 
-The three scripts must be in downloaded together and accessible to the primary script (calendar.cpp) for to generate an executable file.
+The three scripts must be in downloaded together and accessible to the primary script (calendar.cpp - i.e. all of them need to be in the same working directory) to generate an executable file.
 
-An executable for the program can easily be created in Linux using the *make* command. You must have the three files noted above in the working directory along with the Makefile included with the project. Additionally, the SFML packages must be downloaded and available to *make* to compile the project. With this setup, the executale for the program can be creaed using the command below:
+An executable for the program can easily be created in Linux using the *make* command. You must have the three files noted above in the working directory along with the Makefile included with the project. Additionally, the SFML packages must be downloaded and available to *make* to compile the project. With this setup, the executale for the program can be created using the command below:
 
 > *make all*
+OR
+> *make calendar*
 
 The Makefile for the project is designed to include the necessary dependencies automatically to make the compiling process easier.
 
+Alteratively to using *make*, you can also use the compiling command below to create the script.
+
+> g++ -std=c++20 calendar.cpp -o calendar -lsfml-graphics -lsfml-window -lsfml-system
+
 There is curretly no setup for the script to be compiled on a Windows device. The linux platform via software like Ubuntu is needed to compile the scripts.
+
 
 ## Long Description
 
