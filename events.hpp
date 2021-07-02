@@ -21,8 +21,7 @@ Event constructors - 2 options
 
 HOW FILE NAMES ARE CREATED: 
 
--- type_of_file + name of event + day + month + year + ".json" --- e.g. event_wedding_3062021.json
-
+-- type_of_file + name of event + day + month + year + part of description + ".json" --- e.g. event_wedding_3062021.json
 -- for "type of file" everything will typically be saved as "event"
 
 
