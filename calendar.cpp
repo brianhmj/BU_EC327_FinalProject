@@ -29,8 +29,6 @@ auto date(std::vector<int> date1, std::vector<int> date2){
     }
 }
 
-
-
 void show_day(vector<Event>* saved_events) {
 
   int in_day;
@@ -41,13 +39,6 @@ void show_day(vector<Event>* saved_events) {
 
   std::vector<std::string> monthArray = {"Jan","Feb","Mar","Apr","May","Jun",
   "Jul","Aug","Sep","Oct","Nov","Dec"};
-
-  // if (argc > 2) {
-  //   in_day = std::stoi(argv[1]);
-  //   in_month = std::stoi(argv[2]);
-  //   in_year = std::stoi(argv[3]);
-  //   inputs = true;
-  // }
 
   while(true) {
 
@@ -87,7 +78,7 @@ void show_day(vector<Event>* saved_events) {
     for (auto ev : *saved_events) {
       vector<int> saved_date = ev.get_date();
       if (saved_date.at(0) == temp_month and saved_date.at(1) == temp_day and saved_date.at(2) == temp_year)
-        event_info += ("\n" + ev.get_name() + "\n");
+        event_info += ("\n" + ev.get_name() + " - " + (ev.get_description()).substr(0,8));
     }
     //grab this days logged event or the logged event of the specified day dont froget to convert it to string if nesscary 
 
@@ -148,7 +139,7 @@ void show_day(vector<Event>* saved_events) {
   }
 }
 
-void show_week() {
+void show_week(vector<Event>* saved_events) {
   int secAdjust = 0;
   std::string command;
   sf::Event Event;
@@ -207,15 +198,6 @@ void show_week() {
       inputTime = std::time(NULL) + secAdjust;
       // theweek.at(j).tm_mday -= multiplier2;
     }
-
-    // std::cout << theweek.at(0).tm_mday << std::endl;
-    // std::cout << theweek.at(1).tm_mday << std::endl;
-    // std::cout << theweek.at(2).tm_mday << std::endl;
-    // std::cout << theweek.at(3).tm_mday << std::endl;
-    // std::cout << theweek.at(4).tm_mday << std::endl;
-    // std::cout << theweek.at(5).tm_mday << std::endl;
-    // std::cout << theweek.at(6).tm_mday << std::endl;
-
 
     sf::RenderWindow s_week(sf::VideoMode(2000, 1000), "group 5");
     sf::Text d1,d2,d3,d4,d5,d6,d7,t1,t2,t3,t4,t5,t6,t7;
@@ -306,15 +288,31 @@ void show_week() {
     t6.setFillColor(sf::Color::White);
     t7.setFillColor(sf::Color::White);
 
-    d1.setString("hi");//info from json file goes here
-    d2.setString("hi");
-    d3.setString("hi");
-    d4.setString("hi");
-    d5.setString("hi");
-    d6.setString("hi");
-    d7.setString("hi");
+    vector<string> week_evs;
+    for (int i = 0; i < 7; i++) {
+      string event_info = "";
+      int temp_month = theweek.at(i).tm_mon + 1, 
+          temp_day = theweek.at(i).tm_mday + 1,
+          temp_year = inputTm.tm_year + 1900;
+      for (auto ev : *saved_events) {
+        vector<int> saved_date = ev.get_date();
+        if (saved_date.at(0) == temp_month and saved_date.at(1) == temp_day and saved_date.at(2) == temp_year)
+          event_info += ("\n" + ev.get_name() + " - " + (ev.get_description()).substr(0,8));
+      }
+      week_evs.push_back(event_info.substr(0, 12));
+    }
 
-    // vector<sf::Text> day
+    //vector<sf::Text*> day_text{&d1, &d2, &d3, &d4, &d5, &d6, &d7};
+    // for (int i = 0; i < 7; i++)
+    //   (*(day_text.at(i))).setString(week_evs.at(i));
+
+    d1.setString(week_evs.at(0));
+    d2.setString(week_evs.at(1));
+    d3.setString(week_evs.at(2));
+    d4.setString(week_evs.at(3));
+    d5.setString(week_evs.at(4));
+    d6.setString(week_evs.at(5));
+    d7.setString(week_evs.at(6));
 
     t1.setString("Sun " + monthArray.at(int(theweek.at(0).tm_mon)) + " " + std::to_string((int)theweek.at(0).tm_mday));
     t2.setString("Mon " + monthArray.at(int(theweek.at(1).tm_mon)) + " " + std::to_string((int)theweek.at(1).tm_mday));
@@ -385,7 +383,7 @@ void show_week() {
 
 int main() {
 
-  std::string command;
+  std::string command, done;
 
   const fs::path WD = fs::current_path();
   const fs::path APPDATA = WD / "AppData";
@@ -403,8 +401,10 @@ int main() {
               << "\tEnter 'day' to view specific days from the calendar\n"
               << "\tEnter 'week' to view an entire week from the calendar\n"
               << "\tEnter 'add' to add an event to the calendar\n"
+              << "\tEnter 'delete' to remove an event from your calendar\n"
+              << "\tEnter 'edit' to modify an event from your calendar\n"
               << "\tEnter 'events' to view all events you have saved\n"
-              << "\tEnter 'quit' if you would like to exit the application\n";
+              << "\tEnter 'quit' if you would like to exit the application\n\n";
 
 
     std::cin >> command;
@@ -417,10 +417,23 @@ int main() {
       e.event_save(&APPDATA_EVENTS);
       saved_events.push_back(e);
     } else if (command == "week") {
-      show_week();
+      show_week(&saved_events);
+    } else if (command == "delete") {
+      delete_event(&saved_events, &APPDATA_EVENTS);
+      saved_events = load_events(&APPDATA_EVENTS);
+    } else if (command == "edit") {
+      saved_events.clear();
+      saved_events = load_events(&APPDATA_EVENTS);
+      Event* modded_event = modify_event(&saved_events);
+      (*modded_event).event_save(&APPDATA_EVENTS);
     } else if (command == "events") {
       std::cout << "\n\nHere are all the events currently saved in your calendar:\n\n";
+      saved_events.clear();
+      saved_events = load_events(&APPDATA_EVENTS);
       show_events(&saved_events);
+      std::cout << "Enter 'done' when you are done viewing  ";
+      while (std::cin >> done)
+        if (done == "done") break;
     } else
       std::cout << "command not understood\n";
   }

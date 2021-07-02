@@ -16,7 +16,7 @@
 #include <SFML/Graphics.hpp>
 
 // Header file includes
-#include "events2.hpp"
+#include "events.hpp"
 
 
 auto date(std::vector<int> date1, std::vector<int> date2){
@@ -41,6 +41,13 @@ void show_day(vector<Event>* saved_events) {
 
   std::vector<std::string> monthArray = {"Jan","Feb","Mar","Apr","May","Jun",
   "Jul","Aug","Sep","Oct","Nov","Dec"};
+
+  // if (argc > 2) {
+  //   in_day = std::stoi(argv[1]);
+  //   in_month = std::stoi(argv[2]);
+  //   in_year = std::stoi(argv[3]);
+  //   inputs = true;
+  // }
 
   while(true) {
 
@@ -80,7 +87,7 @@ void show_day(vector<Event>* saved_events) {
     for (auto ev : *saved_events) {
       vector<int> saved_date = ev.get_date();
       if (saved_date.at(0) == temp_month and saved_date.at(1) == temp_day and saved_date.at(2) == temp_year)
-        event_info += ("\n" + ev.get_name() + (ev.get_description()).substr(0,8));
+        event_info += ("\n" + ev.get_name() + "\n");
     }
     //grab this days logged event or the logged event of the specified day dont froget to convert it to string if nesscary 
 
@@ -378,7 +385,7 @@ void show_week() {
 
 int main() {
 
-  std::string command, done;
+  std::string command;
 
   const fs::path WD = fs::current_path();
   const fs::path APPDATA = WD / "AppData";
@@ -396,10 +403,8 @@ int main() {
               << "\tEnter 'day' to view specific days from the calendar\n"
               << "\tEnter 'week' to view an entire week from the calendar\n"
               << "\tEnter 'add' to add an event to the calendar\n"
-              << "\tEnter 'delete' to remove an event from your calendar\n"
-              << "\tEnter 'edit' to modify an event from your calendar\n"
               << "\tEnter 'events' to view all events you have saved\n"
-              << "\tEnter 'quit' if you would like to exit the application\n\n";
+              << "\tEnter 'quit' if you would like to exit the application\n";
 
 
     std::cin >> command;
@@ -413,21 +418,9 @@ int main() {
       saved_events.push_back(e);
     } else if (command == "week") {
       show_week();
-    } else if (command == "delete") {
-      delete_event(&saved_events, &APPDATA_EVENTS);
-      saved_events = load_events(&APPDATA_EVENTS);
-    } else if (command == "edit") {
-      saved_events.clear();
-      saved_events = load_events(&APPDATA_EVENTS);
-      modify_event(&saved_events);
     } else if (command == "events") {
       std::cout << "\n\nHere are all the events currently saved in your calendar:\n\n";
-      saved_events.clear();
-      saved_events = load_events(&APPDATA_EVENTS);
       show_events(&saved_events);
-      std::cout << "Enter 'done' when you are done viewing  ";
-      while (std::cin >> done)
-        if (done == "done") break;
     } else
       std::cout << "command not understood\n";
   }

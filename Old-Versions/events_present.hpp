@@ -34,6 +34,7 @@ HOW FILE NAMES ARE CREATED:
 #include <filesystem>
 #include <map>
 #include <string>
+#include <string>
 #include <vector>
 
 #include "json.hpp"
@@ -76,6 +77,9 @@ class Event {
   int year;
   string description;
   string filename;
+  // std::vector<int> date;  // int month, day, and year
+  // std::vector<int> start_time;  // int hours, minutes
+  // std::vector<int> end_time;
 
 public:
   // constructor to create new event
@@ -86,19 +90,8 @@ public:
     year = std::stoi(in_year);
     description = in_description;
     notify = in_notify;
-
-    filename = "event_";
-    for (char c : name) {
-      if (c == ' ') filename += '-';
-      else filename += c;
-    }
-    filename += std::to_string(day) + std::to_string(month) + std::to_string(year);
-    for (int i = 0; i < 5; i++) {
-      if (description.at(i) == ' ') filename += '-';
-      else filename += description.at(i);
-    }
-    filename += ".json";
-  }
+    filename = "event_" + name + std::to_string(day) + std::to_string(month) + std::to_string(year) + ".json";
+  };
 
   Event(string in_name, int in_month, int in_day, int in_year, string in_description, bool in_notify = false) {
     name = in_name;
@@ -107,28 +100,19 @@ public:
     year = in_year;
     description = in_description;
     notify = in_notify;
+    filename = "event_" + name + std::to_string(day) + std::to_string(month) + std::to_string(year) + ".json";
+  };
 
-    filename = "event_";
-    for (char c : name) {
-      if (c == ' ') filename += '-';
-      else filename += c;
-    }
-    filename += std::to_string(day) + std::to_string(month) + std::to_string(year);
-    for (int i = 0; i < 5; i++) {
-      if (description.at(i) == ' ') filename += '-';
-      else filename += description.at(i);
-    }
-    filename += ".json";
-  }
 
-  Event(json* j) {
+  // void new_event(); // not sure if I'll use this
+
+  Event(json *j) {
     name = j->at("name");
     month = j->at("month");
     day = j->at("day");
     year = j->at("year");
     notify = j->at("notify");
     filename = j->at("filename");
-    description = j->at("description");
   }
   
   void event_save(const fs::path*); // will use this method to save appointment info to a json file
@@ -145,9 +129,6 @@ public:
     vector<int> date{this->month, this->day, this->year};
     return date;
   }
-  string get_description() {
-    return this->description;
-  }
 
   // void notification() {};
 
@@ -156,18 +137,19 @@ public:
 Event add_to_calendar() {
   // this function will add an event to your calendar
   std::string name, month, day, year, description, temp_name;
-  std::cout << "\nname of event: ";
-  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  std::getline(std::cin, name);
-  std::cout << "Month (entered as ##, ex. febuary is 02)" << std::endl;
+  bool notify;
+  std::cout << "name of event" << std::endl;
+  std::cin >> name;
+  std::cout << "month(entered as ##, ex. for febuary enter 02)" << std::endl;
   std::cin >> month;
-  std::cout << "Day (entered as ##, ex. twenty first day is 21)" << std::endl;
+  std::cout << "day(entered as ##, ex. for the twenty first enter 21)" << std::endl;
   std::cin >> day;
-  std::cout << "Year (entered as ####, ex. for the year twenty twenty one enter 2021)" << std::endl;
+  std::cout << "Year(entered as ####, ex. for the year twenty twenty one enter 2021)" << std::endl;
   std::cin >> year;
-  std::cout << "event description\n";
-  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  std::getline(std::cin, description);
+  // std::cout << "do you want to be notified before the event, if so enter a 1 for yes or a 0 for no\n" << std::endl;
+  // std::cin >> notify;
+  std::cout << "event description\n" << std::endl;
+  std::cin >> description;
   Event e(name,month,day,year,description);
   return e;
 }
@@ -185,8 +167,7 @@ Event* find_event(vector<Event>* saved, string find_name) {
 }
 
 string Event::show() {
-  return "Event Name: " + name + " - Date: " + date_to_display(month, day, year) 
-                        + " - " + description.substr(0,10) + "...";
+  return "Name of event: " + name + " | " + date_to_display(month, day, year);
 }
 
 void Event::event_save(const fs::path* APPDATA_EVENTS) {
@@ -223,14 +204,7 @@ void modify_event(vector<Event>* saved) {
     mod_e = find_event(saved, name_of_event);
   } while (mod_e == nullptr);
 
-  for (auto& p : fs::directory_iterator("AppData/Events")) {
-    if (p.path() == ("AppData/Events/" + mod_e->get_filename())) {
-      bool success = fs::remove(p.path());
-    }
-  }
-
   *mod_e = add_to_calendar();
-  (*mod_e).save_event();
 }
 
 void delete_event(vector<Event>* saved, const fs::path* APPDATA_EVENTS) {
@@ -238,7 +212,7 @@ void delete_event(vector<Event>* saved, const fs::path* APPDATA_EVENTS) {
   Event* mod_e;
   std::cout << "Here are the events you can choose from:\n\n";
   show_events(saved);
-  std::cout << "\n\nPlease enter the name of the event that you would like to delete.\n";
+  std::cout << "\n\nPlease enter the name of the event that you would like to delete.";
 
   do {
     std::cout << "Use the name as it is typed in the list above.\n";
@@ -246,17 +220,14 @@ void delete_event(vector<Event>* saved, const fs::path* APPDATA_EVENTS) {
     mod_e = find_event(saved, name_of_event);
   } while (mod_e == nullptr);
 
-  for (auto& p : fs::directory_iterator("AppData/Events")) {
-    if (p.path() == ("AppData/Events/" + mod_e->get_filename())) {
-      bool success = fs::remove(p.path());
-      if (success) std::cout << "\nEvent file deleted.\n";
-    }
-  }
-
   for (int i = 0; i < saved->size(); i++) {
     if ((saved->at(i)).get_name() == name_of_event) saved->erase(saved->begin() + i);
   }
 
+  for (auto& p : fs::directory_iterator("AppData/Events")) {
+    if (p.path() == mod_e->get_filename())
+      std::cout << "\nEvent file deleted.\n";
+  }
 }
 
 vector<Event> load_events(const fs::path* APPDATA_EVENTS) {
